@@ -33,14 +33,15 @@ jobs:
     
     - name: Checkout
       uses: actions/checkout@v3
-
-    - name: Build
-      id: build
-      uses: cloudposse/github-action-docker-build-push@main
+    - name: Build Docker Image
+      id: buildAndPushImage
+      uses: MaximilianoBz/dockerhub-buildpush@v1.0
       with:
-        registry: registry.hub.docker.com
-        organization: "${{ github.event.repository.owner.login }}"
-        repository: "${{ github.event.repository.name }}"
-        login: "${{ secrets.DOCKERHUB_USERNAME }}"
-        password: "${{ secrets.DOCKERHUB_PASSWORD }}"
-        platforms: linux/amd64,linux/arm64
+        registry_url: 'docker.io'
+        repository_name: 'github-actions'
+        user_name: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
+        image_version: 'v1.0'
+        docker_file: '.'
+    - name: Get pre step result output image_pull_url
+      run: echo "The time was ${{ steps.buildAndPushImage.outputs.image_pull_url }}"
